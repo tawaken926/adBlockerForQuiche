@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Quiche Brauzer Ad Blocker</title>
+    <style>
+        /* スタイルはここに追加 */
+    </style>
+    <script>
+        // ローカルストレージからブロックリストを読み込む
+        let blockList = JSON.parse(localStorage.getItem('blockList') || '[]');
+
+        window.onload = () => {
+            // ブロックリストに含まれる要素を非表示に
+            blockList.forEach(selector => {
+                let elements = document.querySelectorAll(selector);
+                elements.forEach(element => element.style.display = 'none');
+            });
+
+            // 要素をクリックしたときに非表示にするイベントリスナーを追加
+            document.addEventListener('click', event => {
+                let element = event.target;
+                let selector = getSelector(element);
+                if (selector && !blockList.includes(selector)) {
+                    blockList.push(selector);
+                    localStorage.setItem('blockList', JSON.stringify(blockList));
+                    element.style.display = 'none';
+                }
+            }, true); // true でキャプチャフェーズでイベントを処理
+        };
+
+        // 要素のセレクタを取得する関数
+        function getSelector(element) {
+            if (element.id) {
+                return '#' + element.id;
+            } else if (element.className) {
+                return '.' + Array.from(element.classList).join('.');
+            } else {
+                return '';
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Quiche Brauzer Ad Blocker</h1>
+    <p>ページ上の任意の要素をクリックしてブロックしてください。</p>
+</body>
+</html>
